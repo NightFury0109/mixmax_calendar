@@ -2,62 +2,40 @@ const moment = require('moment');
 const db = require("db");
 
 exports.getAvailableSlots = async (req, res) => {
+  let timeslots = [];
   const { hostUserId } = req.query;
   const events = await db.calendar.findEventsForUser(hostUserId);
   const todayDate = new Date().getDate();
-
+  // Filter only events in next 7 days
   const nextSevenDaysEvents = events.filter(event => moment(event.start).date() > todayDate);
-  console.log(nextSevenDaysEvents);
+
+  for (let dateOffset = 1; dateOffset <= 7; dateOffset++) {
+    const todayEvents = nextSevenDaysEvents.filter(event => moment(event.start).date() == todayDate + dateOffset);
+
+    for (let hour = 9; hour <= 16; hour++) {
+      const slot = moment(new Date()).date(todayDate + dateOffset).hour(hour).minute(0).second(0).millisecond(0).format('YYYY-MM-DDTHH:mm:ss.SSS');
+      let flag = true;
+
+      todayEvents.forEach(event => {
+        const start = new Date(event.start).getTime();
+        const end = new Date(event.end).getTime();
+        const slotStart = new Date(slot).getTime();
+        const slotEnd = new Date(moment(slot).add(1, "h")).getTime();
+
+        if (start <= slotStart && slotStart < end || start < slotEnd && slotEnd <= end || start >= slotStart && slotEnd >= end) {
+          flag = false;
+        }
+      });
+
+      if (flag) timeslots.push(slot);
+    }
+  }
+
   res.json({
-    name: 'Eng Test User',
+    name: hostUserId,
     timeslotLengthMin: 60,
     // This is mock data that you should remove and replace with `db.calendar.findEventsForUser`.
     // See the README for more details.
-    timeslots: [
-      '2021-11-24T14:00:00.000',
-      '2021-11-24T15:00:00.000',
-      '2021-11-24T16:00:00.000',
-      '2021-11-24T19:00:00.000',
-      '2021-11-24T20:00:00.000',
-      '2021-11-24T21:00:00.000',
-      '2021-11-25T14:00:00.000',
-      '2021-11-25T18:00:00.000',
-      '2021-11-25T19:00:00.000',
-      '2021-11-25T20:00:00.000',
-      '2021-11-25T21:00:00.000',
-      '2021-11-26T14:00:00.000',
-      '2021-11-26T15:00:00.000',
-      '2021-11-26T16:00:00.000',
-      '2021-11-26T19:00:00.000',
-      '2021-11-26T20:00:00.000',
-      '2021-11-26T21:00:00.000',
-      '2021-11-27T14:00:00.000',
-      '2021-11-27T15:00:00.000',
-      '2021-11-27T16:00:00.000',
-      '2021-11-27T17:00:00.000',
-      '2021-11-27T18:00:00.000',
-      '2021-11-27T19:00:00.000',
-      '2021-11-27T20:00:00.000',
-      '2021-11-27T21:00:00.000',
-      '2021-11-28T14:00:00.000',
-      '2021-11-28T20:00:00.000',
-      '2021-11-28T21:00:00.000',
-      '2021-11-29T14:00:00.000',
-      '2021-11-29T15:00:00.000',
-      '2021-11-29T16:00:00.000',
-      '2021-11-29T17:00:00.000',
-      '2021-11-29T18:00:00.000',
-      '2021-11-29T19:00:00.000',
-      '2021-11-29T20:00:00.000',
-      '2021-11-29T21:00:00.000',
-      '2021-11-30T14:00:00.000',
-      '2021-11-30T15:00:00.000',
-      '2021-11-30T16:00:00.000',
-      '2021-11-30T17:00:00.000',
-      '2021-11-30T18:00:00.000',
-      '2021-11-30T19:00:00.000',
-      '2021-11-30T20:00:00.000',
-      '2021-11-30T21:00:00.000',
-    ],
+    timeslots: timeslots,
   });
 }
