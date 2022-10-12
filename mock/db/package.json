@@ -1,0 +1,11 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "Mock DB for the \"meeting times\" code challenge.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Jordi Salvat",
+  "license": "UNLICENSED"
+}

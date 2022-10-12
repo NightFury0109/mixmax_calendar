@@ -1,0 +1,48 @@
+{
+  "name": "@mixmaxhq/code-challenge-meeting-times",
+  "version": "1.0.0",
+  "description": "Code challenge for hiring interviews; see https://...",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "concurrently 'npm run client' 'npm run server'",
+    "client": "webpack --watch --mode development --entry ./client/index.js",
+    "server": "nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mixmaxhq/code-challenge-meeting-times.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mixmaxhq/code-challenge-meeting-times/issues"
+  },
+  "homepage": "https://github.com/mixmaxhq/code-challenge-meeting-times#readme",
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "babel-loader": "^8.2.3",
+    "concurrently": "^6.4.0",
+    "css-loader": "^6.5.1",
+    "eslint": "^8.4.1",
+    "eslint-plugin-react": "^7.27.1",
+    "html-webpack-plugin": "^5.5.0",
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.15",
+    "style-loader": "^3.3.1",
+    "supertest": "^6.1.6",
+    "webpack": "^5.64.1",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "db": "file:./mock/db",
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "random": "^3.0.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "seedrandom": "^3.0.5"
+  }
+}
